@@ -1,0 +1,45 @@
+{
+    "members": {
+        "702145156694016109": {
+            "attack": true,
+            "name": "\u305f\u3053\u308f\u3055(\u7802\u809d)",
+            "taskkill": 0,
+            "history": [
+                {
+                    "messageid": 856540769602109451,
+                    "bosscount": 0,
+                    "overtime": 30,
+                    "defeat": true,
+                    "memo": "",
+                    "other": []
+                },
+                {
+                    "messageid": 856543285355348008,
+                    "bosscount": 1,
+                    "overtime": 0,
+                    "defeat": false,
+                    "memo": "",
+                    "other": []
+                }
+            ],
+            "boss": 1,
+            "notice": null,
+            "gacha": 0,
+            "route": []
+        }
+    },
+    "bosscount": 1,
+    "channelid": 708906395457814541,
+    "beforesortie": 0,
+    "lap": {
+        "0": 0.0
+    },
+    "defeatlist": [
+        "2021/06/21 23:33:00"
+    ],
+    "attacklist": [
+        "2021/06/21 23:37:22"
+    ],
+    "namedelimiter": "",
+    "admin": false
+}

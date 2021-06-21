@@ -1,4 +1,4 @@
-# tokenkeycode.py というファイル名で以下の行を保存する 
+# tokenkeycode.py というファイル名で以下の行を保存する
 # TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxx.yyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzz'
 
 inputchannel = '凸報告'
@@ -60,7 +60,7 @@ import tokenkeycode
 import asyncio
 import discord
 from discord.ext import tasks
-import datetime 
+import datetime
 import json
 import glob
 import os
@@ -75,7 +75,7 @@ from functools import cmp_to_key
 #from PIL import Image
 #import numpy as np
 
-T = TypeVar('T') 
+T = TypeVar('T')
 
 BOSSNUMBER = len(BossName)
 
@@ -97,9 +97,9 @@ class PrizeRate():
         self.memorial : int = memorial
         self.stone : int = stone
         self.heart : int = heart
-    
+
     def Name(self):
-        star = 7 - self.star 
+        star = 7 - self.star
         if star <= 3:
             return '[%d等]' % (star)
         return '%d等' % (star)
@@ -108,7 +108,7 @@ class Princess():
     def __init__(self, name, star):
         self.name = name
         self.star = star
-    
+
     def starstr(self):
         if 3 <= self.star:
             return "[★%d]" % self.star
@@ -119,7 +119,7 @@ class GachaSchedule:
         self.startdate = startdate
         self.gachatype = gachatype
         self.name = name
-    
+
     def Serialize(self):
         ret = {}
         ignore = []
@@ -250,12 +250,12 @@ class Gacha():
         if (c == '2'): return 3
         if (c == '1'): return 4
         return -1
-        
+
     def PickUpDelete(self, name):
         if type(name) is list:
             for m in name:
                 self.PickUpDelete(m)
-        
+
         for gacharate in self.gachabox:
             if name in gacharate.namelist:
                 gacharate.namelist.remove(name)
@@ -270,7 +270,7 @@ class Gacha():
     def FindPrincess(self, name):
         if len(self.gachabox) == 0:
             self.GetBoxData()
-        
+
         if name in self.limited: return 'l'
         if name in self.gachabox[0].namelist: return self.gachatype
         if name in self.gachabox[1].namelist: return 'f'
@@ -348,7 +348,7 @@ class Gacha():
 
     @staticmethod
     def NameListToString(namelist):
-        if type(namelist) is str: 
+        if type(namelist) is str:
             return namelist
         if type(namelist) is list:
             return ','.join(namelist)
@@ -386,9 +386,9 @@ class Gacha():
                 break
             message +=  '%d: %s [%s] [%s]\n' % (num + 1, m.startdate, Gacha.GachaType(m.gachatype), Gacha.NameListToString(m.name) )
             num += 1
-        
+
         return message
-       
+
     @staticmethod
     def Lottery(box : List[T], leaststar = 1) -> T:
         rndstar = random.random() * 100
@@ -447,7 +447,7 @@ class ClanScore:
                 break
             total += blap * BossLapScore[level]
             level += 1
-        
+
         lap = (score - total) // BossLapScore[level] + (LevelUpLap[level - 1] if 0 < level else 1)
         modscore = (score - total) % BossLapScore[level]
 
@@ -469,7 +469,7 @@ class ClanScore:
 class StringChopper:
     def __init__(self):
         self.initialdic :Dict[str, List[str]] = {}
-    
+
     def Register(self, name):
         length = len(name)
         if length == 0: return
@@ -486,12 +486,12 @@ class StringChopper:
                 page.insert(i, name)
                 return
         page.append(name)
-    
+
     def Print(self):
         for value in self.initialdic.values():
             for name in value:
                 print(name)
-    
+
     def Serialize(self) -> List[str]:
         result = []
         for value in self.initialdic.values():
@@ -499,7 +499,7 @@ class StringChopper:
                 result.append(name)
 
         return result
-    
+
     def Deserialize(self, datalist):
         for data in datalist:
             self.Register(data)
@@ -525,7 +525,7 @@ class StringChopper:
                 return result
 
         return None
-    
+
 class PrincessIndex:
     def __init__(self):
         self.name2index :Dict[str, int] = {}
@@ -563,7 +563,7 @@ class PrincessIndex:
         return None
 
     def Load(self):
-        with open('princess.txt') as f:
+        with open('princess.txt',encoding="utf-8") as f:
             for s_line in f:
                 namearray = s_line.split()
                 if len(namearray) < 2: continue
@@ -593,7 +593,7 @@ class PartyInfomation:
         if self.share == 0 : return True
         if self.share == 1 and userid == self.userid : return True
         return False
-    
+
     def PrincessName(self):
         return '/'.join(princessIndex.Convert2Name(self.party))
 
@@ -644,7 +644,7 @@ class DefeatData:
     def __init__(self, defeattime, name):
         self.defeattime = defeattime
         self.name = name
-    
+
     def Serialize(self):
         ret = {}
         ignore = []
@@ -716,13 +716,13 @@ class ClanMember():
         s = ''
         for c in opt:
             if c == 'n': s += self.name
-            elif c == 's': 
+            elif c == 's':
                 s += '%d凸' % self.SortieCount()
-            elif c == 'S': 
+            elif c == 'S':
                 s += '[%d凸]' % self.SortieCount()
-            elif c == 't': 
+            elif c == 't':
                 if self.taskkill: s += 'tk'
-            elif c == 'T': 
+            elif c == 'T':
                 if self.taskkill: s += '[tk]'
             elif c == 'o':
                 if self.IsOverkill(): s += 'o%d' % (self.Overtime() // 10)
@@ -745,7 +745,7 @@ class ClanMember():
         self.attack = False
         self.reportlimit = None
         self.CreateHistory(messageid, self.boss, 0, defeat)
-    
+
     def Cancel(self, clan):
         self.attack = False
         self.reportlimit = None
@@ -754,7 +754,7 @@ class ClanMember():
         self.attack = False
         self.reportlimit = None
         self.CreateHistory(messageid, self.boss, overtime, True)
-    
+
     def Overtime(self):
         if (len(self.history) == 0): return 0
         return self.history[-1]['overtime']
@@ -779,7 +779,7 @@ class ClanMember():
 
     def IsOverkill(self):
         return self.Overtime() != 0
-    
+
     def MessageChcck(self, messageid):
         for h in self.history:
             if (h['messageid'] == messageid):
@@ -816,7 +816,7 @@ class ClanMember():
     def ChangeOvertime(self, time):
         if len(self.history) == 0:
             return '前の凸がありません'
-        
+
         if self.ChangeableTime(time):
             self.history[-1]['overtime'] = time
         else:
@@ -836,7 +836,7 @@ class ClanMember():
         count = 1
         for h in self.history:
             str += '%d回目 %d周目:%s' % (count,
-            h['bosscount'] // BOSSNUMBER + 1, 
+            h['bosscount'] // BOSSNUMBER + 1,
             BossName[h['bosscount'] % BOSSNUMBER])
 
             if (h['defeat']):
@@ -875,7 +875,7 @@ class ClanMember():
             if 50 <= time:
                 attack.add(h['bosscount'] % BOSSNUMBER + 1)
             before = h
-        
+
         return list(route - attack)
 
     def Serialize(self):
@@ -904,7 +904,7 @@ class ClanMember():
 
     def DayFinish(self):
         return self.SortieCount() == MAX_SORITE
-    
+
     def UpdateActive(self):
         self.lastactive = datetime.datetime.now()
 
@@ -921,7 +921,7 @@ class ClanMember():
             if (princess.star == 3): rare += 1
 
         if (self.gacha == 1):
-            mes = '素敵な仲間が…　来るといいですねぇ～' 
+            mes = '素敵な仲間が…　来るといいですねぇ～'
             if (0 < rare and random.random() < 0.5):
                 mes = 'かんぱ～い！ ' + u"\U0001F37B"
 
@@ -933,7 +933,7 @@ class ClanMember():
             for i, p in enumerate(result):
                 mes += staremoji[p.star]
                 if i == 4: mes += '\n'
-            
+
             post = await channel.send(mes)
             await asyncio.sleep(5)
             await post.delete()
@@ -970,11 +970,11 @@ class ClanMember():
                     dic[name] += 1
                 else:
                     dic[name] = 1
-        
+
         mes = ''
         for name, count in dic.items():
             mes += '%s:%d\n' % (name, count)
-        
+
         await channel.send(mes)
 
 class DamageControlMember:
@@ -1029,14 +1029,14 @@ class DamageControl():
 
     async def Injure(self, member : ClanMember):
         if not self.active: return
-        
+
         resultflag = 0 < len(self.members)
 
         if member in self.members:
             m = self.members[member]
             self.remainhp -= m.damage
             if self.remainhp < 0 : self.remainhp = 0
-            
+
             m.damage = 0
             m.status = 1
 
@@ -1076,7 +1076,7 @@ class DamageControl():
             if dcm == s:
                 found = True
                 continue
-                
+
             if thp <= s.damage:
                 if s.member.IsOverkill() and (not found or not moverkill) : continue
 
@@ -1095,7 +1095,7 @@ class DamageControl():
                 break
             if 0 < n.damage and n.status == 0:
                 defeatcount += 1
-        
+
         return defeatcount
 
     def Status(self):
@@ -1108,7 +1108,7 @@ class DamageControl():
             if ao == bo: return sign(b.damage - a.damage)
             return sign(bo - ao)
 
-        damagelist = sorted([value for value in self.members.values()], key=cmp_to_key(Compare)) 
+        damagelist = sorted([value for value in self.members.values()], key=cmp_to_key(Compare))
         totaldamage = sum([n.damage for n in damagelist])
 
         attackmember = set([m for m in self.clanmembers.values() if m.attack])
@@ -1127,7 +1127,7 @@ class DamageControl():
                     remainhp -= m.damage
                     if 0 < remainhp:
                         namelist.append(m.member.name + '[%d]' % remainhp)
-                
+
                 namelist.append(last.member.name)
 
                 mes += '\n' + '→'.join(namelist)
@@ -1147,7 +1147,7 @@ class DamageControl():
                         mes += ''. join(['  →%s %d秒' % (d[0], d[1]) for d in dinfo])
                     else:
                         mes += '  残り %d' % (self.remainhp - m.damage)
-        
+
         finishmember = [m.member.DecoName('n[so]') for m in damagelist if m.status != 0]
 
         if 0 < len(finishmember):
@@ -1159,7 +1159,7 @@ class DamageControl():
 
     async def SendResult(self):
         if not self.active: return
-        
+
         await self.SendMessage(self.Status())
 
     async def SendFinish(self, message):
@@ -1194,7 +1194,7 @@ class DamageControl():
                 self.channel = None
         finally:
             self.outputlock = 0
-   
+
 class Clan():
     numbermarks = [
         "\N{DIGIT ZERO}\N{COMBINING ENCLOSING KEYCAP}", # type: ignore
@@ -1363,7 +1363,7 @@ class Clan():
         else:
             self.stampcheck['messageid'] = 0
         return self.stampcheck['messageid']
-    
+
     async def AddReaction(self, message, overkill):
         reactemojis = self.emojis if not overkill else self.emojisoverkill
 
@@ -1430,16 +1430,16 @@ class Clan():
         self.SetInputChannel()
         if self.inputchannel is not None:
             await self.inputchannel.send(mes)
-    
+
     def CheckOptionNone(self, opt):
-        if 0 < len(opt): 
+        if 0 < len(opt):
             raise ValueError
         return True
 
     def CheckInputChannel(self, message):
         if self.inputchannel is None or message.channel.name != inputchannel:
             return True
-            
+
         return False
 
     def CheckNotAdministrator(self, message):
@@ -1693,13 +1693,13 @@ class Clan():
     async def Score(self, message, member : ClanMember, opt):
         result = self.ScoreCalc(opt)
         if (result is not None):
-            await message.channel.send('%d-%d %s (残りHP %s %%)' % 
+            await message.channel.send('%d-%d %s (残りHP %s %%)' %
             (result.lap, result.bossindex + 1, BossName[result.bossindex], result.hprate))
             return True
         else:
             await message.channel.send('計算できませんでした')
             return False
-    
+
     async def Route(self, message, member : ClanMember, opt):
         channel = message.channel
         route = set()
@@ -1711,7 +1711,7 @@ class Clan():
             except ValueError:
                 pass
 
-        member.route = list(route)               
+        member.route = list(route)
 
         if 0 < len(member.route):
             await channel.send('凸ルート:' + ' '.join([BossName[i  - 1] for i in route]))
@@ -1788,7 +1788,7 @@ class Clan():
         if BOSSNUMBER != len(namearray):
             await channel.send('usage) bossname boss1,boss2,boss3,boss4,boss5')
             return
-        
+
         global BossName
         BossName = namearray
         GlobalStrage.Save()
@@ -1916,8 +1916,8 @@ class Clan():
                 mes += clan.Status() + '\n'
 
         dt_now = datetime.datetime.now()
-        filename = 'report_%s.txt' % dt_now.strftime("%Y%m%d_%H%M")  
-        
+        filename = 'report_%s.txt' % dt_now.strftime("%Y%m%d_%H%M")
+
         with StringIO(mes) as bs:
             await channel.send(file=discord.File(bs, filename))
 
@@ -1976,11 +1976,11 @@ class Clan():
             if clan.inputchannel is None:
                 await message.channel.send('inputchannel が設定されていません')
                 return False
-            
+
             await clan.inputchannel.send(s[1])
         else:
             await message.channel.send('guildがありません')
-        
+
         return False
 
     async def ServerLeave(self, message, member : ClanMember, opt):
@@ -2069,7 +2069,7 @@ class Clan():
         if message.channel.type == discord.ChannelType.private:
             await message.channel.send('このチャンネルでは使えません')
             return
-        
+
         try:
             damage = int(opt)
         except ValueError:
@@ -2077,7 +2077,7 @@ class Clan():
 
         if not self.damagecontrol.active:
             await message.channel.send('ダメコンを行っていません')
-            return 
+            return
         self.damagecontrol.Damage(member, damage)
         await self.damagecontrol.SendResult()
         return False
@@ -2095,7 +2095,7 @@ class Clan():
         if message.channel.type == discord.ChannelType.private:
             await message.channel.send('このチャンネルでは使えません')
             return
-        
+
         try:
             sp = opt.split(' ')
             damage = int(sp[0])
@@ -2106,8 +2106,8 @@ class Clan():
 
         if not self.damagecontrol.active:
             await message.channel.send('ダメコンを行っていません')
-            return 
-        
+            return
+
         mem = self.GetIndexValue(self.members, m)
         if mem is None: mem = member
 
@@ -2115,7 +2115,7 @@ class Clan():
         await self.damagecontrol.SendResult()
 
     async def DamageTest(self, message, member : ClanMember, opt):
-        
+
         mem = self.GetIndexValue(self.members, 1)
         if mem is None: mem = member
         mem.name = 'ダイチ'
@@ -2141,7 +2141,7 @@ class Clan():
 
         except ValueError:
             return None
-    
+
     def FindChannel(self, guild : discord.Guild, name : str) -> Optional[discord.TextChannel]:
         if guild is None or guild.channels is None:
             return None
@@ -2187,7 +2187,7 @@ class Clan():
                             return await cmdtuple[1](message, member, opt)
                         except ValueError:
                             pass
-        
+
         if self.damagecontrol.active and self.damagecontrol.channel == message.channel:
             member = self.GetMember(message.author)
             if member.attack:
@@ -2239,7 +2239,7 @@ class Clan():
             if (member.notice == boss):
                 notice.append(member.mention)
 
-        if (len(notice) == 0):       
+        if (len(notice) == 0):
             return None
         else:
             return ' '.join(notice)
@@ -2251,7 +2251,7 @@ class Clan():
         if l < count:
             for _i in range(count - l):
                 self.defeatlist.append(now)
-        
+
         self.defeatlist[count - 1] = now
 
     def AddAttackTime(self, count):
@@ -2262,7 +2262,7 @@ class Clan():
         if l <= icount:
             for _i in range(icount + 1 - l):
                 self.attacklist.append(now)
-        
+
         self.attacklist[icount] = now
 
     async def ChangeBoss(self, channel, count):
@@ -2318,7 +2318,7 @@ class Clan():
             member.Finish(self, payload.message_id)
             member.notice = None
             await self.damagecontrol.Injure(member)
-        
+
         if (1 <= idx and idx <= 8):
             self.AddAttackTime(self.TotalSortie())
 
@@ -2337,7 +2337,7 @@ class Clan():
             for m in self.members.values():
                 if m.attack and m.boss == boss:
                     m.reportlimit = datetime.datetime.now() + datetime.timedelta(minutes = 5)
-        
+
         if (idx == 9):
             member.Cancel(self)
             await self.damagecontrol.Remove(member)
@@ -2375,7 +2375,7 @@ class Clan():
                     if (data['bosscount'] + 1 == self.bosscount):
                         await self.ChangeBoss(self.inputchannel, -1)
                     await self.inputchannel.send('ボスが食い違う場合は手動で調整してください\n「prevboss」で前のボス、「nextboss」で次のボスに設定します')
-                
+
                 await self.AddReaction(member.attackmessage, member.IsOverkill())
 
                 return True
@@ -2383,7 +2383,7 @@ class Clan():
                 await self.inputchannel.send('巻き戻しに失敗しました')
 
         return False
-                        
+
     def SortieCount(self):
         count = 0
         for member in self.members.values():
@@ -2435,7 +2435,7 @@ class Clan():
 
     def BossIndex(self):
         return self.bosscount % BOSSNUMBER
-    
+
     def BossLap(self):
         return self.bosscount // BOSSNUMBER + 1
 
@@ -2480,7 +2480,7 @@ class Clan():
         def Compare(a : ClanMember, b : ClanMember):
             an = a.Overboss()
             bn = b.Overboss()
-            if (an - bn) % BOSSNUMBER == 0: 
+            if (an - bn) % BOSSNUMBER == 0:
                 return sign(an - bn)
             return sign(an % BOSSNUMBER) - (bn % BOSSNUMBER)
 
@@ -2494,7 +2494,7 @@ class Clan():
         attackcount += oknum * 0.5
         restattack = len(self.members) * MAX_SORITE - attackcount
         lap = self.LapAverage()
-        restlap = (restattack / lap) if 0 < lap else 0 
+        restlap = (restattack / lap) if 0 < lap else 0
 
         nextlap = self.NextLvUpLap()
         nextstr = ''
@@ -2514,7 +2514,7 @@ class Clan():
                 slist = sorted(c, key=lambda member : member.lastactive, reverse=True)
                 s += '%d回目 %d人\n' % (i, len(c))
                 s += '  '.join([m.DecoName('nOT') for m in slist]) + '\n'
-        
+
         routedisplay = False
         bossroute = [[], [], [], [], []]
         for m in self.members.values():
@@ -2564,7 +2564,7 @@ class Clan():
 
             if 'beforesortie' in mdic:
                 clan.beforesortie = mdic['beforesortie']
-            
+
             if 'defeatlist' in mdic:
                 clan.defeatlist = mdic['defeatlist']
 
@@ -2586,7 +2586,7 @@ class Clan():
             return clan
 
 
-    
+
 
 class PrivateUser:
     DefalutHave = set()
@@ -2603,7 +2603,7 @@ class PrivateUser:
         self.used = set()
         self.cachehavelist  = set()
         self.cacheunusedlist = set()
-        
+
     def IsHave(self, princessid):
         if princessid in self.cachehavelist:
             return True
@@ -2626,7 +2626,7 @@ class PrivateUser:
             if pindex not in self.DefalutHave:
                 self.have.add(pindex)
             self.unhave.discard(pindex)
-        
+
         for pindex in unhavelist:
             self.have.discard(pindex)
             self.unhave.add(pindex)
@@ -2700,7 +2700,7 @@ class PrivateUser:
 
     @staticmethod
     def DefalutHaveLoad():
-        with open('defaulthave.txt') as f:
+        with open('defaulthave.txt',encoding="utf-8") as f:
             for s_line in f:
                 n = princessIndex.GetIndex(s_line.strip())
                 if 0 < n:
@@ -2748,7 +2748,7 @@ class PartyInfoList:
         if 0 <= index and index < len(self.plist):
             if self.plist[index].userid== userid:
                 self.plist[index].share = -1
-    
+
     def Serialize(self):
         serial = {
             'plist' : [m.Serialize() for m in self.plist]
@@ -2761,19 +2761,19 @@ class PartyInfoList:
         des = PartyInfoList()
         if 'plist' in list:
             des.plist = [PartyInfomation.Deserialize(m) for m in list['plist']]
-        
+
         return des
 
 class PartyInfoNotepad:
     def __init__(self):
         self.notepad : Dict[int, PartyInfoList] = {}
-   
+
     def Register(self, party : PartyInfomation):
         partylist = self.notepad.get(party.boss)
         if partylist is None:
             partylist = PartyInfoList()
             self.notepad[party.boss] = partylist
-        
+
         partylist.Append(party)
 
     @staticmethod
@@ -2781,14 +2781,14 @@ class PartyInfoNotepad:
         for p in partylist:
             if 5 <= p.PartyMatch(party):
                 return True
-        
+
         return False
 
     def List(self, boss, party: Optional[set], userid) -> List[PartyInfomation]:
         partylist = self.notepad.get(boss)
         if partylist is None:
             return []
-        
+
         result : List[PartyInfomation] = []
         for p in partylist.plist:
             if not p.Viewable(userid): continue
@@ -2807,7 +2807,7 @@ class PartyInfoNotepad:
 
         if partylist is None:
             return None
-        
+
         n = index % devide
         if n < 0 or len(partylist.plist) <= n: return None
         info = partylist.plist[n]
@@ -2847,7 +2847,7 @@ class PartyInfoNotepad:
         if 'PartyInfoNotepad' in list:
             for key, value in list['PartyInfoNotepad'].items():
                 des.notepad[int(key)] = PartyInfoList.Deserialize(value)
-        
+
         return des
 
     def Save(self):
@@ -2880,7 +2880,7 @@ class PrivateMessage:
         for n, disp in enumerate(displist):
             if listnum <= n: break
             mes += disp.InfoOneLineRecomend(user.cacheunusedlist) + '\n'
-        
+
         return mes
 
     @staticmethod
@@ -2890,7 +2890,7 @@ class PrivateMessage:
 
         try:
             bosslevel = int(message)
-        except ValueError: 
+        except ValueError:
             bosslevel = user.clan.BossLevel()
 
         mes = ''
@@ -2917,7 +2917,7 @@ class PrivateMessage:
         for n, disp in enumerate(displist):
             if listnum <= n: break
             mes += disp.InfoOneLine() + '\n'
-        
+
         return mes
 
     @staticmethod
@@ -2980,7 +2980,7 @@ class PrivateMessage:
         if partyset is None:
             await channel.send('パーティメンバーの解析失敗')
             return
-        
+
         if 1800 < len(memo.encode('utf-8')):
             await channel.send('メモ欄が長すぎます')
             return
@@ -3010,7 +3010,7 @@ class PrivateMessage:
         except ValueError:
             await channel.send('数値エラー')
             return
- 
+
         result = partyInfoNotepad.Infomation(boss, user.author.id)
 
         if result is not None:
@@ -3032,7 +3032,7 @@ class PrivateMessage:
         except ValueError:
             await channel.send('数値エラー')
             return
- 
+
         result = partyInfoNotepad.Modify(boss, user.author.id, memo)
 
         if result is not None:
@@ -3051,7 +3051,7 @@ class PrivateMessage:
         except ValueError:
             await channel.send('数値エラー')
             return
- 
+
         result = partyInfoNotepad.Delete(boss, user.author.id)
 
         if result is not None:
@@ -3136,7 +3136,7 @@ class PrivateMessage:
                 result = princessIndex.Chopper(m)
                 if result is None:
                     await channel.send('%s で解析失敗' % m)
-                    return 
+                    return
                 havelist.extend(result)
 
         user.RegisterList(havelist, unhavelist)
@@ -3146,7 +3146,7 @@ class PrivateMessage:
         if 0 < len(havelist):
             havename = princessIndex.Convert2Name(havelist)
             mes += '所持追加:%s\n' % ','.join(havename)
-        
+
         if 0 < len(unhavelist):
             unhavename = princessIndex.Convert2Name(unhavelist)
             mes += '未所持追加:%s\n' % ','.join(unhavename)
@@ -3169,10 +3169,10 @@ class PrivateMessage:
             else:
                 await channel.send('使用済みキャラがいません')
             return
-        
+
         if message == 'reset':
             await PrivateMessage.UseReset(user, channel, message)
-            return 
+            return
 
         try:
             boss = int(meslist[0])
@@ -3186,7 +3186,7 @@ class PrivateMessage:
             if partyinfo is None:
                 await channel.send('%d の編成が見つかりません' % boss)
                 return
-            
+
             party = partyinfo.party.copy()
 
             if 1 < len(meslist):
@@ -3196,7 +3196,7 @@ class PrivateMessage:
                     return
                 if 0 < len(result):
                     party.discard(result[0])
-            
+
             usedlist.extend(list(party))
 
         else:
@@ -3211,7 +3211,7 @@ class PrivateMessage:
                     result = princessIndex.Chopper(m)
                     if result is None:
                         await channel.send('%s で解析失敗' % m)
-                        return 
+                        return
                     usedlist.extend(result)
 
         user.Used(usedlist, unusedlist)
@@ -3221,7 +3221,7 @@ class PrivateMessage:
         if 0 < len(usedlist):
             usedname = princessIndex.Convert2Name(usedlist)
             mes += '使用済み:%s\n' % ','.join(usedname)
-        
+
         if 0 < len(unusedlist):
             unusedname = princessIndex.Convert2Name(unusedlist)
             mes += '未使用:%s\n' % ','.join(unusedname)
@@ -3328,7 +3328,7 @@ async def loop():
 
     if nowtime == '05:00':
         Outlog(ERRFILE, '05:00 batch start len:%d ' % (len(clanhash)))
-        
+
         for guildid, clan in clanhash.items():
             try:
                 message = 'おはようございます\nメンバーの情報をリセットしました'
@@ -3368,7 +3368,7 @@ async def loop():
 
         for user in userhash.values():
             user.UsedClear()
-        
+
         PrivateUser.SaveList(userhash)
         Outlog(ERRFILE, '05:00 batch end')
 
@@ -3378,7 +3378,7 @@ async def loop():
                 if clan.inputchannel is not None:
                     message = 'クランバトル終了です。お疲れさまでした。'
                     await clan.inputchannel.send(message)
-    
+
     shtime = now
     for clan in clanhash.values():
         for member in clan.members.values():
@@ -3410,7 +3410,7 @@ async def on_ready():
             if len(matchguild) == 1:
                 clan.guild = matchguild[0]
                 print(matchguild[0].name + " set.")
-            else: 
+            else:
                 print('[%d] not found' % guildid)
 
     for user in userhash.values():
@@ -3449,11 +3449,11 @@ async def on_message(message):
         else:
             user.channel = message.channel
             user.author = message.author
-        
+
         result = await PrivateMessage.on_message(user, message.channel, message.content)
 
         if result:
-            pass 
+            pass
         return
 
 @client.event
