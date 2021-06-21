@@ -1,5 +1,3 @@
-# tokenkeycode.py というファイル名で以下の行を保存する
-# TOKEN = 'xxxxxxxxxxxxxxxxxxxxxxxx.yyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzz'
 
 inputchannel = '凸報告'
 outputchannel = '状況報告'
